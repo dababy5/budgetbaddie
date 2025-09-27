@@ -103,6 +103,6 @@ def gemini_process_purchases(request):
     if request.method == "GET":
         gemini_api_key = config("GEMINI_API")
         genai.configure(gemini_api_key)
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel('gemini-2.0-flash')
         response = model.generate_content("Tell me a story about a dragon.")
         print(response.text)

@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org@1.9.9"></script>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
 </head>
     <body>
 
@@ -22,10 +22,86 @@
             <!-- use this for navbar routing links -->
             </ul>
         </nav>
+        <div class="dashboard-container">
 
-        <main>
-          <p>welcome {{ user.username }}!</p>
-          
-        </main>
+            <!-- Header -->
+            <header>
+            <h1>Hey {{user.username}}</h1>
+            </header>
+
+            <!-- Weekly Budget Input -->
+            <section class="budget-input">
+            <h2>Set Your Weekly Budget</h2>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="number" name="weekly_budget" placeholder="Enter amount ($)" required>
+                <button type="submit">Save Budget</button>
+            </form>
+            </section>
+
+            <!-- Insights and AI Tips -->
+            <section class="insights">
+            <!-- Chart Placeholder -->
+            <div class="card chart">
+                <h3>Spending Insights</h3>
+                <canvas id="spendingChart"></canvas>
+            </div>
+
+            <!-- AI Tips -->
+            <div class="card ai-tips">
+                <h3>AI Tips to Save More 💡</h3>
+                <div class="tips-list">
+                <div class="tip">Try grabbing a $5 coffee instead of $8 at Starbucks this morning ☕</div>
+                <div class="tip">Lunch idea: McDonald’s meal deal instead of Chipotle → saves $4.</div>
+                </div>
+            </div>
+            </section>
+
+            <!-- Chat Section -->
+            <section class="chat">
+            <div class="chat-box" id="chatBox">
+                <!-- Messages will appear here dynamically later -->
+            </div>
+            <form class="chat-input" method="POST" action="">
+                {% csrf_token %}
+                <input type="text" name="message" placeholder="Ask Budget Baddie for advice..." required>
+                <button type="submit">Send</button>
+            </form>
+            </section>
+
+        </div>
+
+        <!-- Chart.js for graphs -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            // Example chart data (replace with backend later)
+            const ctx = document.getElementById('spendingChart').getContext('2d');
+            new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [
+                {
+                    label: 'This Week',
+                    data: [50, 70, 40, 100, 90, 120, 150],
+                    borderColor: '#7B5CF0',
+                    fill: false,
+                    tension: 0.4
+                },
+                {
+                    label: 'Last Week',
+                    data: [60, 80, 30, 110, 70, 100, 140],
+                    borderColor: '#C5B3FF',
+                    fill: false,
+                    tension: 0.4
+                }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+            });
+        </script>
     </body>
 </html>
