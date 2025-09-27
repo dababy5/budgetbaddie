@@ -4,7 +4,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .forms import SignUpForm, LoginForm,BankForm
 from .models import Profile
-
+from decouple import config
+import google.generativeai as genai
 from django.contrib.auth import authenticate, login
 
 
@@ -66,3 +67,17 @@ def connect_bank(request):
             return redirect("user_home")
     
     return render(request,"registration/connect_bank.html")
+
+def get_purchase_info(request):
+    if request.method == "GET"
+    API_KEY=config("CAPITAL_API")
+        url = f'http://api.reimaginebanking.com/customers{}/accounts{}/purchases?key={API_KEY}'
+        try:
+
+def gemini_process_purchases(request):
+    if request.method == "GET"
+    API_KEY=config("GEMINI_API")
+    genai.configure(API_KEY)
+        model = genai.GenerativeModel('gemini-pro')
+        response = model.generate_content("Tell me a story about a dragon.")
+        print(response.text)
