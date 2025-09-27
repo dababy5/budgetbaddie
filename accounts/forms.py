@@ -21,3 +21,8 @@ class SignUpForm(UserCreationForm):
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=200, required=True)
     password = forms.CharField(widget=forms.PasswordInput, required=True)
+
+class BankForm(forms.form):
+    bank_name = forms.CharField(max_length=200, required=True)
+    bank_accountID = forms.CharField(max_length=16, required =True)
+    bank_customerID = forms.CharField(widget)

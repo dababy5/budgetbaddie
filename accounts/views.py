@@ -54,6 +54,8 @@ def connect_bank(request):
         form = BankForm(request.POST)
         if form.is_valid():
             bank_name = form.cleaned_data["bank_name"]
-            bank_password = form.cleaned_data["bank_password"]
+            bank_accountId = form.cleaned.data["bank_accountID"]
+            bank_customerId = form.cleaned_data["bank_password"]
+
 
 
