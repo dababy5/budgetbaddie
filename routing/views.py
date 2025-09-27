@@ -10,6 +10,8 @@ def signup(request):
     
 def login(request):
     return render(request, "registration/login.html")
+def connect(request):
+    return render(request, "connect_bank.html")
 
 @login_required
 def user_home (request):
