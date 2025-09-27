@@ -29,12 +29,16 @@
               <h2 class="header">Login</h2>
               <form method="POST" action="{% url 'login' %}">
                   <div class="form-field">
-                      <div class="label">Username</div>
+                      <div class="label">Bank Name</div>
                       <input type="text" required name="bank_name"/>
                   </div>
                   <div class="form-field">
-                      <div class="label">Password</div>
-                      <input type="text" required name="password"/>
+                      <div class="label">accountID</div>
+                      <input type="text" required name="bank_accountID"/>
+                  </div>
+                  <div>
+                      <div class="label">password</div>
+                      <input type="password" required name="bank_customerId">
                   </div>
                   {% csrf_token %}
                   <button class="submit-btn" type="submit">Login</button>

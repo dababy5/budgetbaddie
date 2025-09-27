@@ -24,5 +24,5 @@ class LoginForm(forms.Form):
 
 class BankForm(forms.form):
     bank_name = forms.CharField(max_length=200, required=True)
-    bank_accountID = forms.CharField(max_length=16, required =True)
-    bank_customerID = forms.CharField(widget)
+    bank_accountID = forms.CharField(max_length=50, required =True)
+    bank_customerId = forms.CharField(max_length=50, required =True)
