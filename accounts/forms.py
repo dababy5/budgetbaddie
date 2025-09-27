@@ -22,7 +22,7 @@ class LoginForm(forms.Form):
     username = forms.CharField(max_length=200, required=True)
     password = forms.CharField(widget=forms.PasswordInput, required=True)
 
-class BankForm(forms.form):
+class BankForm(forms.Form):
     bank_name = forms.CharField(max_length=200, required=True)
     bank_accountID = forms.CharField(max_length=50, required =True)
     bank_customerId = forms.CharField(max_length=50, required =True)

@@ -57,8 +57,12 @@ def connect_bank(request):
             bank_accountId = form.cleaned_data["bank_accountID"]
             bank_customerId = form.cleaned_data["bank_customerId"]
     
-        
-                return redirect("user_home")
+            profile = request.user.profile
+
+            profile.bank_acccountId = bank_accountId
+            profile.bank_customerId = bank_customerId
+            profile.save()
+            return redirect("user_home")
     
     return render(request,"registration/connect_bank.html")
 
