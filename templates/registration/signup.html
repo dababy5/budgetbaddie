@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.9"></script>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+    <body>
+
+        <nav class="navbar">
+            <div class="logo"><a href="{% url 'index' %}">Terroza</a></div>
+            <ul class="nav-links">
+                <li><a href="{% url 'leaderboard' %}" class="nav-link">Leaderboard</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'search' %}" class="nav-link">Explore</a></li>
+                    <li><a href="{% url 'friends' %}" class="nav-link">Friends</a></li>
+                    <li><a href="{% url 'load_challenge_page' %}" class="nav-link">Challenges</a></li>
+                    <li><a href="{% url 'bookshelf' %}" class="nav-link">Bookshelf</a></li>
+                    <li><a href="{% url 'profile' %}" class="button-nav-link">Profile</a></li>
+                {% else %}
+                    <li><a href="{% url 'about' %}" class="nav-link">About</a></li>
+                    <li><a href="{% url 'signup' %}" class="button-nav-link">Sign Up/Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        <main>
+          <section class="form">
+            <div class="form-container">
+              <h2 class="header">Sign up</h2>
+              <form method="POST">
+                  {% csrf_token %}
+
+                  <div class="form-field">
+                      <div class="label">Username</div>
+                      <input type="text" required name="username"/>
+                  </div>
+                  <div class="form-field">
+                      <div class="label">Email</div>
+                      <input type="text" required name="email"/>
+                  </div>
+                  <div class="form-field">
+                      <div class="label">Password</div>
+                      <input type="text" required name="password1"/>
+                  </div>
+                  <div class="form-field">
+                      <div class="label">Re-enter Password</div>
+                      <input type="text" required name="password2"/>
+                  </div>
+                  
+                  <button class="submit-btn" type="submit">Sign Up</button>
+                  <a href="{% url 'login' %}" class="link">Already have an Account?</a>
+              </form>
+            </div>
+          </section>
+        </main>
+    </body>
+</html>
