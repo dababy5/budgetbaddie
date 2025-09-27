@@ -7,6 +7,7 @@ from .models import Profile
 from decouple import config
 import google.generativeai as genai
 from django.contrib.auth import authenticate, login
+import requests
 
 
 
@@ -69,15 +70,39 @@ def connect_bank(request):
     return render(request,"registration/connect_bank.html")
 
 def get_purchase_info(request):
-    if request.method == "GET"
-    API_KEY=config("CAPITAL_API")
-        url = f'http://api.reimaginebanking.com/customers{}/accounts{}/purchases?key={API_KEY}'
-        try:
+    if request.method == "GET":
+        capital_one_api_key = config("CAPITAL_API")
+        user = request.user
+        account_id = user.profile.account_id
+        customer_id = user.profile.customer_id
+
+        
+        api_url = f"http://api.reimaginebanking.com/accounts/{account_id}/purchases?key={capital_one_api_key}"
+
+        response = requests.get(api_url)
+
+        data = response.json()
+        purchase_data = []
+
+        for item in data:
+            purchase_type = item.get("type", "No type available")
+            merchant_id = item.get("merchant_id", "No merchant ID available")
+            purchase_date = item.get("purchase_date", "No purchase data available")
+            amount = item.get("amount", "No amount available")
+            description = item.get("description", "No description available")
+
+            purchase_data.append({
+                "type": purchase_type,
+                "merchant_id": merchant_id,
+                "purchase_date": purchase_date,
+                "amount": amount,
+                "description": description
+            })
 
 def gemini_process_purchases(request):
-    if request.method == "GET"
-    API_KEY=config("GEMINI_API")
-    genai.configure(API_KEY)
+    if request.method == "GET":
+        gemini_api_key = config("GEMINI_API")
+        genai.configure(gemini_api_key)
         model = genai.GenerativeModel('gemini-pro')
         response = model.generate_content("Tell me a story about a dragon.")
         print(response.text)
