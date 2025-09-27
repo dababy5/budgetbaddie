@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 
 from django.contrib.auth.models import User
 from .forms import SignUpForm, LoginForm
+from .models import Profile
 
 from django.contrib.auth import authenticate, login
 
@@ -16,8 +17,12 @@ def signup_view(request):
 
         if form.is_valid():
 
+            phone_number = form.cleaned_data["phone_number"]
             # creates instance of User class and creates an individual user
             user = form.save()
+
+            Profile.objects.create(user=user, phone_number=phone_number)
+
             login(request, user)
             return redirect("connect_bank")
         
