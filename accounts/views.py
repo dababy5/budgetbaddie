@@ -19,7 +19,7 @@ def signup_view(request):
             # creates instance of User class and creates an individual user
             user = form.save()
             login(request, user)
-            return redirect("user_home")
+            return redirect("connect_bank")
         
     else:
         form = SignUpForm()
@@ -43,3 +43,4 @@ def login_view(request):
         form = LoginForm()
     
     return render(request, "registration/login.html", {"form": form})
+

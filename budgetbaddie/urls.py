@@ -29,7 +29,7 @@ urlpatterns = [
     path("signup/", signup_view, name="signup"),
     path("login/", login_view, name="login"),
     path("user_home/", user_home, name="user_home"),
-    path("connect_bank/"), connect, name="connect_bank",
+    path("connect_bank/", connect, name="connect_bank"),
 ]
 
 
