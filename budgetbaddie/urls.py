@@ -20,13 +20,14 @@ from django.views.generic.base import TemplateView
 from routing.views import signup, login, index, user_home
 from django.conf import settings
 from django.conf.urls.static import static
+from accounts.views import login_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include ("accounts.urls")),
     path("", TemplateView.as_view(template_name="index.html"), name="index"),
     path("signup/", signup, name="signup"),
-    path("login/", login, name="login"),
+    path("login/", login_view, name="login"),
     path("user_home/", user_home, name="user_home"),
 ]
 
