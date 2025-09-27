@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
-from routing.views import signup, login, index, user_home
+from routing.views import signup, login, index, connect,user_home
 from django.conf import settings
 from django.conf.urls.static import static
 from accounts.views import login_view, signup_view
@@ -29,6 +29,7 @@ urlpatterns = [
     path("signup/", signup_view, name="signup"),
     path("login/", login_view, name="login"),
     path("user_home/", user_home, name="user_home"),
+    path("connect_bank/"), connect, name="connect_bank",
 ]
 
 
