@@ -51,6 +51,7 @@ def login_view(request):
 
 def connect_bank(request):
     if request.method == "POST":
+
         form = BankForm(request.POST)
         if form.is_valid():
             bank_name = form.cleaned_data["bank_name"]
@@ -59,11 +60,9 @@ def connect_bank(request):
     
             profile = request.user.profile
 
-            profile.bank_acccountId = bank_accountId
+            profile.bank_accountId = bank_accountId
             profile.bank_customerId = bank_customerId
             profile.save()
             return redirect("user_home")
     
     return render(request,"registration/connect_bank.html")
-
-

@@ -5,12 +5,6 @@ from django.contrib.auth.models import User
 class SignUpForm(UserCreationForm):
     phone_number = forms.CharField(max_length=10, required=True)
     # removes help text from form
-    def __init__(self, *args, **kwargs):
-        super(SignUpForm, self).__init__(*args, **kwargs)
-
-        for fieldname in ['username', 'password1', 'password2']:
-            self.fields[fieldname].help_text = None
-
     # what to include in the form from the built-in user model
     class Meta:
         model = User
