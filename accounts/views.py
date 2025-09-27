@@ -49,3 +49,11 @@ def login_view(request):
     
     return render(request, "registration/login.html", {"form": form})
 
+def connect_bank(request):
+    if request.method == "POST":
+        form = BankForm(request.POST)
+        if form.is_valid():
+            bank_name = form.cleaned_data["bank_name"]
+            bank_password = form.cleaned_data["bank_password"]
+
+
