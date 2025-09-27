@@ -20,3 +20,6 @@ class BankForm(forms.Form):
     bank_name = forms.CharField(max_length=200, required=True)
     bank_accountID = forms.CharField(max_length=50, required =True)
     bank_customerId = forms.CharField(max_length=50, required =True)
+
+class ChatBotInput(forms.Form):
+    message = forms.CharField()

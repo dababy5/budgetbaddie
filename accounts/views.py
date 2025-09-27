@@ -2,10 +2,10 @@
 from django.shortcuts import render, redirect
 
 from django.contrib.auth.models import User
-from .forms import SignUpForm, LoginForm,BankForm
+from .forms import SignUpForm, LoginForm, BankForm, ChatBotInput
 from .models import Profile
 from decouple import config
-import google.generativeai as genai
+import google as genai
 from django.contrib.auth import authenticate, login
 import requests
 
@@ -98,11 +98,30 @@ def get_purchase_info(request):
                 "amount": amount,
                 "description": description
             })
+            # change the endpoints of these renderings, these are jsut placements
+            return render(request, "user/user_home.html", {"purchase_data": purchase_data})
+    return render(request, "user/user_home.html")
 
 def gemini_process_purchases(request):
-    if request.method == "GET":
-        gemini_api_key = config("GEMINI_API")
-        genai.configure(gemini_api_key)
-        model = genai.GenerativeModel('gemini-2.0-flash')
-        response = model.generate_content("Tell me a story about a dragon.")
-        print(response.text)
+    if request.method == "POST":
+        form = ChatBotInput(request.POST)
+        if form.is_valid():
+
+            message = form.cleaned_data["message"]
+
+            gemini_api_key = config("GEMINI_API")
+            client = genai.Client(api_key=gemini_api_key)
+
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=message
+            )
+
+            return render(request, "user/user_home.html", {"form": form, "response": response})
+    else:
+        # to handle initial get request
+        form = ChatBotInput()
+
+    return render(request, "user/user_home.html", {"form": form})
+            
+            
