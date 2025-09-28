@@ -14,6 +14,7 @@ from datetime import datetime,date
 from decimal import Decimal
 from django.db.models import Sum
 from datetime import date, timedelta
+from django.shortcuts import get_object_or_404
 
 # LOGIN/SIGN UP
 def signup_view(request):
@@ -127,12 +128,14 @@ def gemini_process_purchases(request):
                     model="gemini-2.5-flash", 
                     contents=full_prompt
                 )
+                print(response)
+
                 api_response_text = response.text 
 
             except Exception as e:
                 api_response_text = f"Sorry, there was an error with the API: {e}"
 
-            return render(request, "user/user_home.html", {"form": form, "response": api_response_text})
+            return render(request, "partials/chat_message.html", {"response": api_response_text})
             
 def test_sms(request):
     profile = request.user.profile.phone_number
@@ -215,3 +218,9 @@ def _month_end(d: date) -> date:
         return date(d.year, 12, 31)
     first_next = d.replace(day=1, month=d.month + 1)
     return first_next - timedelta(days=1)
+
+def delete_budget_plan(request, plan_id):
+    if request.method == "POST":
+        plan = get_object_or_404(BudgetPlan, id=plan_id, user=request.user)
+        plan.delete()
+        return HttpResponse(status=204)  

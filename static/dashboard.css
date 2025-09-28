@@ -1,6 +1,6 @@
 /* General Layout */
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   background: #f9f9ff;
   margin: 0;
   padding: 0;
@@ -152,4 +152,95 @@ header h1 {
   padding: 12px 20px;
   cursor: pointer;
   border-radius: 0 0 12px 0;
+}
+/* Plans Section */
+.plans-container {
+  margin: 2rem auto;
+  max-width: 1000px;
+  background: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.plans-container h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  color: #1e1e2f;
+  text-align: left;
+}
+
+/* Table */
+.plans-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.plans-table th, 
+.plans-table td {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.plans-table th {
+  background: linear-gradient(135deg, #6366f1, #4338ca);
+  color: #fff;
+  font-weight: 600;
+}
+
+.plans-table td {
+  background: #fafafa;
+  border-bottom: 1px solid #eee;
+}
+
+.plans-table tr:nth-child(even) td {
+  background: #f5f6ff;
+}
+
+.plans-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Add hover effect */
+.plans-table tr:hover td {
+  background: #eef0ff;
+  transition: background 0.3s ease;
+}
+
+/* SMS badge */
+.sms-badge {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.sms-badge.enabled {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.sms-badge.disabled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #e11d48; /* red */
+  transition: color 0.2s ease;
+}
+
+.delete-btn:hover {
+  color: #b91c1c;
 }

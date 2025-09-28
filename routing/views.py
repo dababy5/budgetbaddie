@@ -17,6 +17,7 @@ def connect(request):
 
 @login_required
 def user_home (request):
+    user=request.user
     plans = BudgetPlan.objects.filter(user=user).order_by("-created_at")  # newest first
     return render(request, "user/user_home.html", {"plans": plans})
 

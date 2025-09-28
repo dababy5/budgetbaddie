@@ -44,33 +44,88 @@
             </div>
 
             <!-- AI Tips -->
-            <div class="card ai-tips">
-                <h3>AI Tips to Save More 💡</h3>
-                <div class="tips-list">
-                <div class="tip">Try grabbing a $5 coffee instead of $8 at Starbucks this morning ☕</div>
-                <div class="tip">Lunch idea: McDonald’s meal deal instead of Chipotle → saves $4.</div>
-                </div>
-            </div>
+            <div class="plans-container">
+  <h2>Your Budget Plans</h2>
+
+  {% if plans %}
+    <table class="plans-table">
+      <thead>
+        <tr>
+          <th>Plan Name</th>
+          <th>Type</th>
+          <th>Amount ($)</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>SMS Alerts</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+    {% for plan in plans %}
+      <tr id="plan-{{ plan.id }}">
+        <td>{{ plan.plan_name }}</td>
+        <td>{{ plan.get_budget_type_display }}</td>
+        <td>{{ plan.budget_amount }}</td>
+        <td>{{ plan.start_date|default:"—" }}</td>
+        <td>{{ plan.end_date|default:"—" }}</td>
+        <td>
+          {% if plan.accept_sms %}
+            <span class="sms-badge enabled">Enabled</span>
+          {% else %}
+            <span class="sms-badge disabled">Disabled</span>
+          {% endif %}
+        </td>
+        <td>
+          <button 
+            hx-post="{% url 'delete_budget_plan' plan.id %}" 
+            hx-target="#plan-{{ plan.id }}" 
+            hx-swap="outerHTML remove" 
+            class="delete-btn"
+            hx-on="htmx:beforeRequest: this.closest('tr').remove()"
+          >
+            🗑️
+          </button>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+  {% else %}
+    <p>No budget plans yet. <a href="{% url 'budget_plan' %}">Create one</a>.</p>
+  {% endif %}
+</div>
+
             </section>
 
             <!-- Chat Section -->
-            <section class="chat">
+        <section class="chat">
             <div class="chat-box" id="chatBox">
-                <!-- Messages will appear here dynamically later -->
+                <!-- Responses will be injected here -->
             </div>
-            <form class="chat-input" method="POST" action="{% url 'gemini_process_purchases' %}">
+
+            <form 
+                class="chat-input"
+                method="POST"
+                action="{% url 'gemini_process_purchases' %}"
+                hx-post="{% url 'gemini_process_purchases' %}"
+                hx-target="#chatBox"
+                hx-swap="beforeend">
+                
                 {% csrf_token %}
-                {% if response %}
-                <p>{{ response }}</p>
-                {% endif %}
                 <input type="text" name="message" placeholder="Ask Budget Baddie for advice..." required>
                 <button type="submit">Send</button>
             </form>
-            </section>
+        </section>
+
+</section>
+
 
         </div>
 
         <!-- Chart.js for graphs -->
+         <script>document.body.addEventListener("htmx:configRequest", (event) => {
+    event.detail.headers["X-CSRFToken"] = "{{ csrf_token }}";
+  });</script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             // Example chart data (replace with backend later)
