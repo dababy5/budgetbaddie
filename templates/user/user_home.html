@@ -64,7 +64,10 @@
             </div>
             <form class="chat-input" method="POST" action="">
                 {% csrf_token %}
-                <input type="text" name="message" placeholder="Ask Budget Baddie for advice..." required>
+                {% if response %}
+                <p>{{ response }}</p>
+                {% endif %}
+                <input type="text" name="user_chat_input" placeholder="Ask Budget Baddie for advice..." required>
                 <button type="submit">Send</button>
             </form>
             </section>
