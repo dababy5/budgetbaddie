@@ -133,14 +133,14 @@ def test_sms(request):
     return HttpResponse(result)
 
 
-def check_budget_and_alert(user):
+#def check_budget_and_alert(user):
     # Example: sum all transactions for this user
-    total = user.transactions.aggregate(Sum("amount"))["amount__sum"] or 0
-    WEEKLY_BUDGET_LIMIT = 200
-
-    if total >= WEEKLY_BUDGET_LIMIT:
-        send_sms_via_email(
-            phone_number="5551234567",       # your number
-            carrier_domain="vtext.com",      # your carrier domain
-            message=f"🚨 Alert! You’ve hit your budget limit: ${total}"
-        )
+    #total = sum(currdate(transactions)
+    #WEEKLY_BUDGET_LIMIT = 
+    #profile = request.user.profile.phone_number
+    #if total >= WEEKLY_BUDGET_LIMIT:
+        #send_sms_via_email(
+        #    phone_number=profile,       # your number
+        #   carrier_domain="vtext.com",      # your carrier domain
+         #   message=f"🚨 Alert! You’ve hit your budget limit: ${total}"
+        #)
