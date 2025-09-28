@@ -31,12 +31,8 @@
 
             <!-- Weekly Budget Input -->
             <section class="budget-input">
-            <h2>Set Your Weekly Budget</h2>
-            <form method="POST" action="">
-                {% csrf_token %}
-                <input type="number" name="weekly_budget" placeholder="Enter amount ($)" required>
-                <button type="submit">Save Budget</button>
-            </form>
+            <h2>Set Your Weekly Budget</h2>  
+                <a href="{% url 'budget_plan' %}">Start</a>
             </section>
 
             <!-- Insights and AI Tips -->
