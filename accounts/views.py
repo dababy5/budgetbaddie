@@ -15,6 +15,8 @@ from decimal import Decimal
 from django.db.models import Sum
 from datetime import date, timedelta
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.utils.dateparse import parse_date
 
 # LOGIN/SIGN UP
 def signup_view(request):
@@ -70,40 +72,45 @@ def connect_bank(request):
             profile.bank_accountId = bank_accountId
             profile.bank_customerId = bank_customerId
             profile.save()
+
+            get_purchase_info(request)
             return redirect("user_home")
     
     return render(request,"registration/connect_bank.html")
 
-def get_purchase_info(request):
-    if request.method == "GET":
 
-        capital_one_api_key = config("CAPITAL_API")
-        user = request.user
-        
-        account_id = user.profile.bank_accountId 
-        
-        api_url = f"http://api.reimaginebanking.com/accounts/{account_id}/purchases?key={capital_one_api_key}"
+def sync_purchases(user):
+    capital_one_api_key = config("CAPITAL_API")
+    account_id = user.profile.bank_accountId
+    api_url = f"http://api.nessieisreal.com/accounts/{account_id}/purchases?key={capital_one_api_key}"
 
-        response = requests.get(api_url)
-        data = response.json()
+    response = requests.get(api_url)
+    data = response.json()
 
-        for item in data:
-            raw_date = item.get("purchase_date")
+    for item in data:
+        raw_date = item.get("purchase_date")
+        if raw_date:
             try:
-                purchase_date = date.fromisoformat(raw_date) if raw_date else None
+                purchase_date = date.fromisoformat(raw_date)
             except ValueError:
-                purchase_date = None  
-            ItemPurchaseHistory.objects.get_or_create(
-                user=user, 
-                merchant_id=item.get("merchant_id", "N/A"),
-                purchase_date=purchase_date,
-                defaults={"purchase_type": item.get("type", "N/A"),
+                pass
+
+        ItemPurchaseHistory.objects.get_or_create(
+            user=user,
+            merchant_id=item.get("merchant_id", "N/A"),
+            purchase_date=purchase_date,
+            defaults={
+                "purchase_type": item.get("type", "N/A"),
                 "amount": Decimal(item.get("amount", 0)),
-                "description": item.get("description", "No description")}
-            )
-        
-        return redirect("user_home") 
-    return render(request, "user/user_home.html")
+                "description": item.get("description", "No description"),
+            },
+        )
+
+# keep your view for manual sync
+def get_purchase_info(request):
+    sync_purchases(request.user)
+    return redirect("user_home")
+
 
 
 def gemini_process_purchases(request):
@@ -138,9 +145,45 @@ def gemini_process_purchases(request):
             return render(request, "partials/chat_message.html", {"response": api_response_text})
             
 def test_sms(request):
-    profile = request.user.profile.phone_number
-    result = send_sms_via_email(f"{profile}", "vtext.com", "Hello")
+    from decouple import config
+    from google import genai
+    from .models import ItemPurchaseHistory
+
+    phone_number = request.user.profile.phone_number
+
+    # Build purchase history context
+    user_purchases = ItemPurchaseHistory.objects.filter(user=request.user)
+    purchase_context = "Here is the user's purchase history:\n"
+    for item in user_purchases:
+        purchase_context += f"- Date: {item.purchase_date}, Amount: ${item.amount}, Description: {item.description}\n"
+
+    # Prompt Gemini to generate a short SMS
+    full_prompt = (
+        f"{purchase_context}\n\n"
+        "Write a short, friendly SMS alert (max 160 characters) reminding the user about their most recent spending. so they can be better"
+    )
+
+    try:
+        api_key = config("GEMINI_API")
+        client = genai.Client(api_key=api_key)
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=full_prompt
+        )
+        ai_message = response.text
+    except Exception as e:
+        ai_message = f"Error with Gemini: {e}"
+
+    # Send the AI-generated SMS
+    result = send_sms_via_email(
+        phone_number=phone_number,
+        carrier_domain="vtext.com",
+        message=ai_message
+    )
+
     return HttpResponse(result)
+
 
 def create_budget_plan(request):
     if request.method == "POST":
@@ -223,4 +266,29 @@ def delete_budget_plan(request, plan_id):
     if request.method == "POST":
         plan = get_object_or_404(BudgetPlan, id=plan_id, user=request.user)
         plan.delete()
-        return HttpResponse(status=204)  
+        return HttpResponse(status=204)
+
+
+def spending_chart_data(request):
+    user = request.user
+
+    start_param = request.GET.get("start")
+    end_param = request.GET.get("end")
+
+    start = parse_date(start_param) if start_param else None
+    end = parse_date(end_param) if end_param else None
+
+    qs = ItemPurchaseHistory.objects.filter(user=user)
+
+    if start and end:
+        qs = qs.filter(purchase_date__range=[start, end])
+
+    purchases = qs.order_by("purchase_date")
+
+    labels = [p.purchase_date.strftime("%Y-%m-%d") for p in purchases]
+    data = [float(p.amount) for p in purchases]
+
+    return JsonResponse({
+        "labels": labels,
+        "data": data,
+    })

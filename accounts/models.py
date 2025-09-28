@@ -1,9 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
+
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
-    phone_number = models.IntegerField()
+    phone_number = models.BigIntegerField()
     bank_name = models.CharField(blank=True)
     bank_accountId = models.CharField(default=0)
     bank_customerId = models.CharField(default=0)

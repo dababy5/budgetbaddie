@@ -31,18 +31,25 @@
 
             <!-- Weekly Budget Input -->
             <section class="budget-input">
-            <h2>Set Your Weekly Budget</h2>  
-                <a href="{% url 'budget_plan' %}">Start</a>
+            <h2>Make Your BudgetBaddie</h2>
+                <a href="{% url 'budget_plan' %}" class="btn">Start</a>
+
             </section>
 
             <!-- Insights and AI Tips -->
-            <section class="insights">
-            <!-- Chart Placeholder -->
-            <div class="card chart">
-                <h3>Spending Insights</h3>
-                <canvas id="spendingChart"></canvas>
-            </div>
 
+            <div class="card chart">
+  <h3>Spending Insights</h3>
+                <form id="dateRangeForm">
+    <label for="start">From:</label>
+    <input type="date" id="start" name="start" required>
+    <label for="end">To:</label>
+    <input type="date" id="end" name="end" required>
+    <button type="submit">Show</button>
+  </form>
+
+  <canvas id="spendingChart"></canvas>
+            </div>
             <!-- AI Tips -->
             <div class="plans-container">
   <h2>Your Budget Plans</h2>
@@ -123,39 +130,70 @@
         </div>
 
         <!-- Chart.js for graphs -->
-         <script>document.body.addEventListener("htmx:configRequest", (event) => {
-    event.detail.headers["X-CSRFToken"] = "{{ csrf_token }}";
-  });</script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            // Example chart data (replace with backend later)
-            const ctx = document.getElementById('spendingChart').getContext('2d');
-            new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [
-                {
-                    label: 'This Week',
-                    data: [50, 70, 40, 100, 90, 120, 150],
-                    borderColor: '#7B5CF0',
-                    fill: false,
-                    tension: 0.4
-                },
-                {
-                    label: 'Last Week',
-                    data: [60, 80, 30, 110, 70, 100, 140],
-                    borderColor: '#C5B3FF',
-                    fill: false,
-                    tension: 0.4
-                }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-            });
-        </script>
+         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('spendingChart').getContext('2d');
+  let chart;
+
+  // Function to render chart
+  function renderChart(chartData, labelText = "All Spending") {
+    if (chart) chart.destroy(); // reset old chart
+
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: chartData.labels,
+        datasets: [{
+          label: labelText,
+          data: chartData.data,
+          borderColor: '#7B5CF0',
+          backgroundColor: 'rgba(123, 92, 240, 0.1)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: "Amount ($)" }
+          },
+          x: {
+            title: { display: true, text: "Date" }
+          }
+        }
+      }
+    });
+  }
+
+  // Load chart data (with optional date filters)
+  function loadChart(start = null, end = null) {
+    let url = "{% url 'spending_chart_data' %}";
+    if (start && end) {
+      url += `?start=${start}&end=${end}`;
+    }
+
+    fetch(url)
+      .then(response => response.json())
+      .then(chartData => {
+        let labelText = (start && end) ? `Spending from ${start} to ${end}` : "All Spending";
+        renderChart(chartData, labelText);
+      });
+  }
+
+  // Hook up form submission
+  document.getElementById("dateRangeForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const start = document.getElementById("start").value;
+    const end = document.getElementById("end").value;
+    loadChart(start, end);
+  });
+
+  // Load all data on first page load
+  loadChart();
+</script>
+
     </body>
 </html>
