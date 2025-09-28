@@ -72,37 +72,28 @@ def connect_bank(request):
 
 def get_purchase_info(request):
     if request.method == "GET":
+
         capital_one_api_key = config("CAPITAL_API")
         user = request.user
-        account_id = user.profile.account_id
+        
+        account_id = user.profile.bank_accountId 
         
         api_url = f"http://api.reimaginebanking.com/accounts/{account_id}/purchases?key={capital_one_api_key}"
 
         response = requests.get(api_url)
-
         data = response.json()
-        purchase_data = []
 
         for item in data:
-            purchase_type = item.get("type", "No type available")
-            merchant_id = item.get("merchant_id", "No merchant ID available")
-            purchase_date = item.get("purchase_date", "No purchase data available")
-            amount = item.get("amount", "No amount available")
-            description = item.get("description", "No description available")
-
-            ItemPurchaseHistory.objects.create(user=user, purchase_type=purchase_type, merchant_id=merchant_id, purchase_date=purchase_date, amount=amount, description=description)
-            ItemPurchaseHistory.save()
-
-            purchase_data.append({
-                "type": purchase_type,
-                "merchant_id": merchant_id,
-                "purchase_date": purchase_date,
-                "amount": amount,
-                "description": description
-            })
-            
-            # change the endpoints of these renderings, these are just placements
-            return render(request, "user/user_home.html", {"purchase_data": purchase_data})
+            ItemPurchaseHistory.objects.create(
+                user=user, 
+                purchase_type=item.get("type", "N/A"),
+                merchant_id=item.get("merchant_id", "N/A"),
+                purchase_date=item.get("purchase_date", "N/A"),
+                amount=item.get("amount", 0),
+                description=item.get("description", "No description")
+            )
+        
+        return redirect("user_home") 
     return render(request, "user/user_home.html")
 
 def gemini_process_purchases(request):
@@ -112,17 +103,26 @@ def gemini_process_purchases(request):
 
             message = form.cleaned_data["message"]
 
+            user_purchases = ItemPurchaseHistory.objects.filter(user=request.user)
+
+            purchase_context = "Here is the user's purchase history:\n"
+            for item in user_purchases:
+                purchase_context += f"- Date: {item.purchase_date}, Amount: ${item.amount}, Description: {item.description}\n"
+
+            full_prompt = f"{purchase_context}\n\nBased on that history, please answer the following question:\n{message}"
+
             gemini_api_key = config("GEMINI_API")
-            client = genai.Client(api_key=gemini_api_key)
+            client = genai.Client(api_key=gemini_api_key) 
 
             response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=message
+                model="gemini-2.5-flash", 
+                contents=full_prompt
             )
 
-            return render(request, "user/user_home.html", {"form": form, "response": response})
+            api_response_text = response.text 
+
+            return render(request, "user/user_home.html", {"form": form, "response": api_response_text})
     else:
-        # to handle initial get request
         form = ChatBotInput()
 
     return render(request, "user/user_home.html", {"form": form})

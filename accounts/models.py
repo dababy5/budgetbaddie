@@ -12,6 +12,6 @@ class ItemPurchaseHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="item_purchase_history")
     purchase_type = models.CharField()
     merchant_id = models.CharField()
-    purchase_date = models.CharField()
+    purchase_date = models.DateField()
     amount = models.CharField()
     description = models.CharField()
