@@ -8,7 +8,8 @@ from decouple import config
 import google as genai
 from django.contrib.auth import authenticate, login
 import requests
-
+from django.http import HttpResponse
+from .utils import send_sms_via_email
 
 
 # LOGIN/SIGN UP
@@ -124,4 +125,7 @@ def gemini_process_purchases(request):
 
     return render(request, "user/user_home.html", {"form": form})
             
-            
+def test_sms(request):
+    # Example: Verizon number
+    result = send_sms_via_email("7035812367", "vtext.com", "Hello from BudgetBaddie 🚀")
+    return HttpResponse(result)

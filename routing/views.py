@@ -17,3 +17,5 @@ def connect(request):
 @login_required
 def user_home (request):
     return render(request, "user/user_home.html")
+def planner (request):
+    return render(request, "user/budget_plan" )
