@@ -10,33 +10,44 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/htmx.org@1.9.9"></script>
-  <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'new.css' %}">
   <title>Budget Planner</title>
 </head>
 <body>
   <div class="form-container">
-    <h1>Create a Budget Plan</h1>
-    <form method="POST" action="">
-      {% csrf_token %}
+    
+    <!-- Wrap all inputs inside a form -->
+    <form method="post" action="">
+      {% csrf_token %} <!-- Django security token -->
       
       <label for="plan_name">Plan Name</label>
       <input type="text" id="plan_name" name="plan_name" placeholder="e.g., September Savings" required>
 
-      <label for="weekly_budget">Weekly Budget ($)</label>
-      <input type="number" id="weekly_budget" name="weekly_budget" min="0" step="0.01" placeholder="500">
+      <!-- Budget type selector -->
+      <div class="radio-group">
+        <p>Select Budget Type:</p>
+        <label><input type="radio" name="budget_type" value="weekly" checked> Weekly</label>
+        <label><input type="radio" name="budget_type" value="monthly"> Monthly</label>
+        <label><input type="radio" name="budget_type" value="yearly"> Yearly</label>
+        <label><input type="radio" name="budget_type" value="custom"> Custom Range</label>
+      </div>
 
-      <label for="monthly_budget">Monthly Budget ($)</label>
-      <input type="number" id="monthly_budget" name="monthly_budget" min="0" step="0.01" placeholder="2000">
+      <!-- Shared amount field -->
+      <div class="amount-row">
+        <label for="budget_amount">Budget Amount ($)</label>
+        <input type="number" id="budget_amount" name="budget_amount" min="0" step="0.01" placeholder="e.g., 500" required>
+      </div>
 
-      <label for="yearly_budget">Yearly Budget ($)</label>
-      <input type="number" id="yearly_budget" name="yearly_budget" min="0" step="0.01" placeholder="24000">
-
-      <div class="date-range">
-        <label for="start_date">Custom Start Date</label>
-        <input type="date" id="start_date" name="start_date">
-
-        <label for="end_date">Custom End Date</label>
-        <input type="date" id="end_date" name="end_date">
+      <!-- Custom range (hidden unless "custom" selected) -->
+      <div class="date-range" id="custom-range" style="display:none;">
+        <div>
+          <label for="start_date">Start Date</label>
+          <input type="date" id="start_date" name="start_date" disabled>
+        </div>
+        <div>
+          <label for="end_date">End Date</label>
+          <input type="date" id="end_date" name="end_date" disabled>
+        </div>
       </div>
 
       <div class="checkbox-row">
@@ -44,8 +55,42 @@
         <label for="accept_sms">Receive SMS alerts when limits are reached</label>
       </div>
 
-      <button type="submit" class="submit-btn">Save Budget</button>
+      <!-- Submit button -->
+      <button type="submit" class="submit-btn">Save Budget Plan</button>
     </form>
+
   </div>
+
+  <script>
+    const radios = document.querySelectorAll('input[name="budget_type"]');
+    const customRange = document.getElementById('custom-range');
+    const startDate = document.getElementById('start_date');
+    const endDate = document.getElementById('end_date');
+    const amountInput = document.getElementById('budget_amount');
+
+    function updateUI() {
+      const selected = document.querySelector('input[name="budget_type"]:checked').value;
+
+      // Update placeholder depending on selection
+      const map = {
+        weekly: 'e.g., 500 for the week',
+        monthly: 'e.g., 2000 for the month',
+        yearly: 'e.g., 24000 for the year',
+        custom: 'Amount for the selected date range'
+      };
+      amountInput.placeholder = map[selected];
+
+      // Show/hide custom range
+      const showCustom = selected === 'custom';
+      customRange.style.display = showCustom ? 'grid' : 'none';
+      [startDate, endDate].forEach(el => {
+        el.disabled = !showCustom;
+        el.required = showCustom;
+      });
+    }
+
+    radios.forEach(r => r.addEventListener('change', updateUI));
+    updateUI();
+  </script>
 </body>
 </html>

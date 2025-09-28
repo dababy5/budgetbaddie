@@ -1,0 +1,161 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: linear-gradient(135deg, #f0f4ff, #e8ebf7);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 2rem;
+  color: #222;
+}
+
+/* Card Container */
+.form-container {
+  background: #fff;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  max-width: 520px;
+  width: 100%;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Heading */
+h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #1e1e2f;
+}
+
+/* Labels */
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+  width: 100%;
+  padding: 0.9rem;
+  border-radius: 12px;
+  border: 1.5px solid #e0e0e0;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+}
+
+input:focus {
+  border-color: #6366f1;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  outline: none;
+}
+
+/* Radio Group */
+.radio-group {
+  margin-top: 1.5rem;
+}
+
+.radio-group p {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+  background: #f9f9fb;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  border: 1.5px solid #ddd;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.radio-group input[type="radio"] {
+  transform: scale(1.2);
+  accent-color: #6366f1;
+}
+
+.radio-group label:hover {
+  border-color: #6366f1;
+  background: #f3f4ff;
+}
+
+/* Budget amount */
+.amount-row {
+  margin-top: 1.5rem;
+}
+
+.amount-row input {
+  font-weight: bold;
+  color: #222;
+  background-color: #fefefe;
+}
+
+/* Date range */
+.date-range {
+  margin-top: 1.2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  padding: 1rem;
+  border: 1.5px dashed #ccc;
+  border-radius: 12px;
+  background: #fafafa;
+}
+
+/* Checkbox row */
+.checkbox-row {
+  margin-top: 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.checkbox-row input {
+  transform: scale(1.2);
+  accent-color: #6366f1;
+}
+
+/* Submit Button */
+.submit-btn {
+  margin-top: 2rem;
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #6366f1, #4338ca);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(67, 56, 202, 0.35);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
