@@ -20,7 +20,7 @@ from django.views.generic.base import TemplateView
 from routing.views import signup, login, index, user_home,connect,planner
 from django.conf import settings
 from django.conf.urls.static import static
-from accounts.views import login_view, signup_view,connect_bank
+from accounts.views import login_view, signup_view,connect_bank,test_sms
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,7 +30,8 @@ urlpatterns = [
     path("login/", login_view, name="login"),
     path("user_home/", user_home, name="user_home"),
     path("connect_bank/", connect_bank, name="connect_bank"),
-    path("budget_plan", planner , name="budget_plan" )
+    path("budget_plan", planner , name="budget_plan" ),
+    path("test-sms/", test_sms, name="test_sms"),
 ]
 
 
