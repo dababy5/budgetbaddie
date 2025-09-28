@@ -1,13 +1,15 @@
 /* === Global Styles === */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "DM Sans", sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+}
 
-
-/* Apply a unique layout to the welcome page body */
 /* === WELCOME PAGE STYLES === */
-
-/* This is the magic that centers everything on the welcome page! */
 body.welcome-page {
   font-family: 'Poppins', sans-serif;
-  background: #f0f2f5;
   display: flex;
   justify-content: center; /* Centers horizontally */
   align-items: center;   /* Centers vertically */
@@ -93,6 +95,7 @@ body.welcome-page {
 }
 
 .navbar .logo a {
+  font-family: 'Space Grotesk', sans-serif;
   text-decoration: none;
   font-size: 1.5rem;
   font-weight: 600;
@@ -134,9 +137,11 @@ body.welcome-page {
 }
 
 .header {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
   text-align: center;
   margin-bottom: 1.5rem;
-  font-size: 1.8rem;
+  font-size: 2.2rem;
   color: #1a1a2e;
 }
 
@@ -159,6 +164,7 @@ input[type="password"] {
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 1rem;
+  box-sizing: border-box;
   transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
