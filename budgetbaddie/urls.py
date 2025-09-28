@@ -17,10 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
-from routing.views import signup, login, index, user_home,connect,planner
+from routing.views import signup, login, index, user_home,connect,planner,thanks
 from django.conf import settings
 from django.conf.urls.static import static
-from accounts.views import login_view, signup_view,connect_bank,test_sms, gemini_process_purchases
+from accounts.views import login_view, signup_view,connect_bank,test_sms, gemini_process_purchases,create_budget_plan
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,8 +31,9 @@ urlpatterns = [
     path("user_home/", user_home, name="user_home"),
     path("user_home/gemini", gemini_process_purchases, name="gemini_process_purchases"),
     path("connect_bank/", connect_bank, name="connect_bank"),
-    path("budget_plan/", planner , name="budget_plan" ),
     path("test-sms/", test_sms, name="test_sms"),
+    path("budget_plan/",create_budget_plan,name="budget_plan"),
+    path("thanks/",thanks,name="thanks")
 ]
 
 

@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You</title>
+  <link rel="stylesheet" href="{% static 'new.css' %}">
+  <style>
+    body {
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f8f9fa;
+      margin: 0;
+    }
+    .thanks-box {
+      text-align: center;
+      background: white;
+      padding: 3rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    .thanks-box h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    .thanks-box a {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #6c63ff;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+    .thanks-box a:hover {
+      background: #5548d6;
+    }
+  </style>
+</head>
+<body>
+  <div class="thanks-box">
+    <h1>✨ Thanks for budgeting with Budget Baddie ✨</h1>
+    <a href="{% url 'user_home' %}">Back to Home</a>
+  </div>
+</body>
+</html>

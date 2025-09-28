@@ -3,14 +3,17 @@ from django.shortcuts import render, redirect
 
 from django.contrib.auth.models import User
 from .forms import SignUpForm, LoginForm, BankForm, ChatBotInput
-from .models import Profile, ItemPurchaseHistory
+from .models import Profile, ItemPurchaseHistory,BudgetPlan
 from decouple import config
 from google import genai
 from django.contrib.auth import authenticate, login
 import requests
 from django.http import HttpResponse
 from .utils import send_sms_via_email
-
+from datetime import datetime,date
+from decimal import Decimal
+from django.db.models import Sum
+from datetime import date, timedelta
 
 # LOGIN/SIGN UP
 def signup_view(request):
@@ -84,13 +87,18 @@ def get_purchase_info(request):
         data = response.json()
 
         for item in data:
-            ItemPurchaseHistory.objects.create(
+            raw_date = item.get("purchase_date")
+            try:
+                purchase_date = date.fromisoformat(raw_date) if raw_date else None
+            except ValueError:
+                purchase_date = None  
+            ItemPurchaseHistory.objects.get_or_create(
                 user=user, 
-                purchase_type=item.get("type", "N/A"),
                 merchant_id=item.get("merchant_id", "N/A"),
-                purchase_date=item.get("purchase_date", "N/A"),
-                amount=item.get("amount", 0),
-                description=item.get("description", "No description")
+                purchase_date=purchase_date,
+                defaults={"purchase_type": item.get("type", "N/A"),
+                "amount": Decimal(item.get("amount", 0)),
+                "description": item.get("description", "No description")}
             )
         
         return redirect("user_home") 
@@ -112,8 +120,7 @@ def gemini_process_purchases(request):
 
             try:
                 # MIGHT NEED TO HARCODE THIS. I HAD TROUBLE IMMPORTING THE .ENV FILE
-                api_key=
-    
+                api_key=config('GEMINI_API')
                 client = genai.Client(api_key=api_key)
 
                 response = client.models.generate_content(
@@ -132,15 +139,79 @@ def test_sms(request):
     result = send_sms_via_email(f"{profile}", "vtext.com", "Hello")
     return HttpResponse(result)
 
+def create_budget_plan(request):
+    if request.method == "POST":
+        plan_name = request.POST.get("plan_name")
+        budget_type = request.POST.get("budget_type") or 0           # weekly|monthly|yearly|custom
+        budget_amount = Decimal(request.POST.get("budget_amount"))
+        start_date_str = request.POST.get("start_date") or None
+        end_date_str = request.POST.get("end_date") or None
+        accept_sms = request.POST.get("accept_sms") == "on"
 
-#def check_budget_and_alert(user):
-    # Example: sum all transactions for this user
-    #total = sum(currdate(transactions)
-    #WEEKLY_BUDGET_LIMIT = 
-    #profile = request.user.profile.phone_number
-    #if total >= WEEKLY_BUDGET_LIMIT:
-        #send_sms_via_email(
-        #    phone_number=profile,       # your number
-        #   carrier_domain="vtext.com",      # your carrier domain
-         #   message=f"🚨 Alert! You’ve hit your budget limit: ${total}"
-        #)
+        # create the plan
+        plan = BudgetPlan.objects.create(
+            user=request.user,
+            plan_name=plan_name,
+            budget_type=budget_type,
+            budget_amount=budget_amount,
+            start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date() if start_date_str else None,
+            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date() if end_date_str else None,
+            accept_sms=accept_sms,
+        )
+
+        # (Optional) run a first check right after saving
+        check_budget_and_alert(request.user, plan)
+
+        return redirect("thanks")
+
+    return render(request, "user/budget_plan.html")
+
+
+def check_budget_and_alert(user, plan: BudgetPlan):
+    today = date.today()
+
+    # 1) determine start/end based on plan type
+    if plan.budget_type == "weekly":
+        start = today - timedelta(days=today.weekday())  # Monday
+        end = start + timedelta(days=6)
+    elif plan.budget_type == "monthly":
+        start = today.replace(day=1)
+        end = _month_end(today)
+    elif plan.budget_type == "yearly":
+        start = date(today.year, 1, 1)
+        end = date(today.year, 12, 31)
+    elif plan.budget_type == "custom":
+        start = plan.start_date
+        end = plan.end_date
+    else:
+        return  # unknown type, bail
+
+    # guard if custom dates missing
+    if start is None or end is None:
+        return
+
+    # 2) sum purchases in range (after your sync runs elsewhere)
+    total = (
+        ItemPurchaseHistory.objects
+        .filter(user=user, purchase_date__range=(start, end))
+        .aggregate(Sum("amount"))["amount__sum"]
+        or Decimal("0")
+    )
+
+    # 3) compare and alert
+    if total >= plan.budget_amount and plan.accept_sms:
+        carrier = "vtext.com"  # consider storing on Profile
+        send_sms_via_email(
+            phone_number=user.profile.phone_number,
+            carrier_domain=carrier,
+            message=(
+                f"🚨 {plan.plan_name}: spent ${total} of ${plan.budget_amount} "
+                f"({plan.budget_type})"
+            ),
+        )
+
+def _month_end(d: date) -> date:
+    if d.month == 12:
+        return date(d.year, 12, 31)
+    first_next = d.replace(day=1, month=d.month + 1)
+    return first_next - timedelta(days=1)

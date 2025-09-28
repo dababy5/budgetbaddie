@@ -17,7 +17,7 @@
   <div class="form-container">
     
     <!-- Wrap all inputs inside a form -->
-    <form method="post" action="">
+    <form method="post" action="{% url 'budget_plan'%}">
       {% csrf_token %} <!-- Django security token -->
       
       <label for="plan_name">Plan Name</label>

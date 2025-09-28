@@ -105,6 +105,7 @@ header h1 {
 
 .chart {
   height: 300px;
+  padding-bottom:100px;
 }
 
 .ai-tips .tip {
