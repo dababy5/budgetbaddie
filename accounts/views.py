@@ -112,7 +112,7 @@ def gemini_process_purchases(request):
 
             try:
                 # MIGHT NEED TO HARCODE THIS. I HAD TROUBLE IMMPORTING THE .ENV FILE
-                api_key = config("GOOGLE_API_KEY")
+                api_key=
     
                 client = genai.Client(api_key=api_key)
 
