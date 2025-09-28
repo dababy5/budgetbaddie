@@ -58,12 +58,12 @@
             <div class="chat-box" id="chatBox">
                 <!-- Messages will appear here dynamically later -->
             </div>
-            <form class="chat-input" method="POST" action="">
+            <form class="chat-input" method="POST" action="{% url 'gemini_process_purchases' %}">
                 {% csrf_token %}
                 {% if response %}
                 <p>{{ response }}</p>
                 {% endif %}
-                <input type="text" name="user_chat_input" placeholder="Ask Budget Baddie for advice..." required>
+                <input type="text" name="message" placeholder="Ask Budget Baddie for advice..." required>
                 <button type="submit">Send</button>
             </form>
             </section>

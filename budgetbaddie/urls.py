@@ -20,7 +20,7 @@ from django.views.generic.base import TemplateView
 from routing.views import signup, login, index, user_home,connect,planner
 from django.conf import settings
 from django.conf.urls.static import static
-from accounts.views import login_view, signup_view,connect_bank,test_sms
+from accounts.views import login_view, signup_view,connect_bank,test_sms, gemini_process_purchases
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +29,7 @@ urlpatterns = [
     path("signup/", signup_view, name="signup"),
     path("login/", login_view, name="login"),
     path("user_home/", user_home, name="user_home"),
+    path("user_home/gemini", gemini_process_purchases, name="gemini_process_purchases"),
     path("connect_bank/", connect_bank, name="connect_bank"),
     path("budget_plan/", planner , name="budget_plan" ),
     path("test-sms/", test_sms, name="test_sms"),

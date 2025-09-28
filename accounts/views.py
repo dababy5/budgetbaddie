@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from .forms import SignUpForm, LoginForm, BankForm, ChatBotInput
 from .models import Profile, ItemPurchaseHistory
 from decouple import config
-import google as genai
+from google import genai
 from django.contrib.auth import authenticate, login
 import requests
 from django.http import HttpResponse
@@ -96,11 +96,11 @@ def get_purchase_info(request):
         return redirect("user_home") 
     return render(request, "user/user_home.html")
 
+
 def gemini_process_purchases(request):
-    if request.method == "POST":
+   if request.method == "POST":
         form = ChatBotInput(request.POST)
         if form.is_valid():
-
             message = form.cleaned_data["message"]
 
             user_purchases = ItemPurchaseHistory.objects.filter(user=request.user)
@@ -108,24 +108,24 @@ def gemini_process_purchases(request):
             purchase_context = "Here is the user's purchase history:\n"
             for item in user_purchases:
                 purchase_context += f"- Date: {item.purchase_date}, Amount: ${item.amount}, Description: {item.description}\n"
-
             full_prompt = f"{purchase_context}\n\nBased on that history, please answer the following question:\n{message}"
 
-            gemini_api_key = config("GEMINI_API")
-            client = genai.Client(api_key=gemini_api_key) 
+            try:
+                # MIGHT NEED TO HARCODE THIS. I HAD TROUBLE IMMPORTING THE .ENV FILE
+                api_key = config("GOOGLE_API_KEY")
+    
+                client = genai.Client(api_key=api_key)
 
-            response = client.models.generate_content(
-                model="gemini-2.5-flash", 
-                contents=full_prompt
-            )
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash", 
+                    contents=full_prompt
+                )
+                api_response_text = response.text 
 
-            api_response_text = response.text 
+            except Exception as e:
+                api_response_text = f"Sorry, there was an error with the API: {e}"
 
             return render(request, "user/user_home.html", {"form": form, "response": api_response_text})
-    else:
-        form = ChatBotInput()
-
-    return render(request, "user/user_home.html", {"form": form})
             
 def test_sms(request):
     profile = request.user.profile.phone_number
