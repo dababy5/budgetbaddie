@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 
 from django.contrib.auth.models import User
 from .forms import SignUpForm, LoginForm, BankForm, ChatBotInput
-from .models import Profile
+from .models import Profile, ItemPurchaseHistory
 from decouple import config
 import google as genai
 from django.contrib.auth import authenticate, login
@@ -74,8 +74,6 @@ def get_purchase_info(request):
         capital_one_api_key = config("CAPITAL_API")
         user = request.user
         account_id = user.profile.account_id
-        customer_id = user.profile.customer_id
-
         
         api_url = f"http://api.reimaginebanking.com/accounts/{account_id}/purchases?key={capital_one_api_key}"
 
@@ -91,6 +89,9 @@ def get_purchase_info(request):
             amount = item.get("amount", "No amount available")
             description = item.get("description", "No description available")
 
+            ItemPurchaseHistory.objects.create(user=user, purchase_type=purchase_type, merchant_id=merchant_id, purchase_date=purchase_date, amount=amount, description=description)
+            ItemPurchaseHistory.save()
+
             purchase_data.append({
                 "type": purchase_type,
                 "merchant_id": merchant_id,
@@ -98,7 +99,8 @@ def get_purchase_info(request):
                 "amount": amount,
                 "description": description
             })
-            # change the endpoints of these renderings, these are jsut placements
+            
+            # change the endpoints of these renderings, these are just placements
             return render(request, "user/user_home.html", {"purchase_data": purchase_data})
     return render(request, "user/user_home.html")
 
