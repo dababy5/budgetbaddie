@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/htmx.org@1.9.9"></script>
+  <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+  <title>Budget Planner</title>
+</head>
+<body>
+  <div class="form-container">
+    <h1>Create a Budget Plan</h1>
+    <form method="POST" action="">
+      {% csrf_token %}
+      
+      <label for="plan_name">Plan Name</label>
+      <input type="text" id="plan_name" name="plan_name" placeholder="e.g., September Savings" required>
+
+      <label for="weekly_budget">Weekly Budget ($)</label>
+      <input type="number" id="weekly_budget" name="weekly_budget" min="0" step="0.01" placeholder="500">
+
+      <label for="monthly_budget">Monthly Budget ($)</label>
+      <input type="number" id="monthly_budget" name="monthly_budget" min="0" step="0.01" placeholder="2000">
+
+      <label for="yearly_budget">Yearly Budget ($)</label>
+      <input type="number" id="yearly_budget" name="yearly_budget" min="0" step="0.01" placeholder="24000">
+
+      <div class="date-range">
+        <label for="start_date">Custom Start Date</label>
+        <input type="date" id="start_date" name="start_date">
+
+        <label for="end_date">Custom End Date</label>
+        <input type="date" id="end_date" name="end_date">
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="accept_sms" name="accept_sms">
+        <label for="accept_sms">Receive SMS alerts when limits are reached</label>
+      </div>
+
+      <button type="submit" class="submit-btn">Save Budget</button>
+    </form>
+  </div>
+</body>
+</html>
