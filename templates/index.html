@@ -4,14 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Budget Baddie</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="welcome-box">
-        <h1>Hey there, welcome to <span>Budget Baddie</span>!</h1>
-        <p>Please login or create an account</p>
-        <a href="{% url 'signup' %}" class="link">Signup</a>
-        <a href="{% url 'login' %}" class="link">Login</a>
+<body class="welcome-page">
+    <div class="welcome-container">
+        <h1 class="logo-text">Budget <span>Baddie</span></h1>
+        <div class="button-container">
+            <a href="{% url 'login' %}" class="btn">Login</a>
+            <a href="{% url 'signup' %}" class="btn btn-primary">Signup</a>
+        </div>
     </div>
 </body>
 </html>

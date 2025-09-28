@@ -1,14 +1,87 @@
 /* === Global Styles === */
-body {
-  margin: 0;
-  font-family: "DM Sans", sans-serif;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-  color: #333;
+
+
+/* Apply a unique layout to the welcome page body */
+/* === WELCOME PAGE STYLES === */
+
+/* This is the magic that centers everything on the welcome page! */
+body.welcome-page {
+  font-family: 'Poppins', sans-serif;
+  background: #f0f2f5;
   display: flex;
-  flex-direction: column;
+  justify-content: center; /* Centers horizontally */
+  align-items: center;   /* Centers vertically */
   min-height: 100vh;
+  flex-direction: row; 
 }
 
+/* Container for the centered logo and buttons */
+.welcome-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Large logo text style */
+.logo-text {
+  font-size: 4.5rem;
+  font-weight: 700;
+  color: #1d2c4e;
+  margin: 0;
+  margin-bottom: 2.5rem;
+  line-height: 1.2;
+}
+
+.logo-text span {
+  color: #6a82fb; /* Accent color */
+}
+
+/* Flex container for the buttons */
+.button-container {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* New button styles for the welcome page */
+.btn {
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.8rem 2.5rem;
+  border-radius: 50px; /* Pill shape */
+  border: 2px solid #6a82fb;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Secondary button (Login) */
+.btn {
+  background-color: #fff;
+  color: #6a82fb;
+}
+
+.btn:hover {
+  background-color: #6a82fb;
+  color: #fff;
+}
+
+/* Primary button (Signup) */
+.btn.btn-primary {
+  background-color: #6a82fb;
+  color: #fff;
+}
+
+.btn.btn-primary:hover {
+  background-color: #556ee6;
+  border-color: #556ee6;
+}
 /* === Navbar === */
 .navbar {
   display: flex;
