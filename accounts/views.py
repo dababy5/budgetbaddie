@@ -128,6 +128,6 @@ def gemini_process_purchases(request):
     return render(request, "user/user_home.html", {"form": form})
             
 def test_sms(request):
-    # Example: Verizon number
-    result = send_sms_via_email("7035812367", "vtext.com", "Hello from BudgetBaddie 🚀")
+    profile = request.user.profile.phone_number
+    result = send_sms_via_email(f"{profile}", "vtext.com", "Hello")
     return HttpResponse(result)
