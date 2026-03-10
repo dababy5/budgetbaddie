@@ -1,0 +1,45 @@
+# Version control
+.git
+.gitignore
+
+# Environment and secrets
+.env
+*.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Django runtime artifacts
+db.sqlite3
+media/
+staticfiles/
+*.log
+
+# IDE and editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Test and coverage artifacts
+htmlcov/
+.tox/
+.nox/
+.coverage
+*.cover
+coverage.xml
+.cache/
