@@ -61,3 +61,4 @@ vonage-verify-legacy==1.0.1
 vonage-video==1.5.1
 vonage-voice==1.4.0
 websockets==15.0.1
+gunicorn==23.0.0
